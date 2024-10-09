@@ -1,45 +1,62 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import './detallesPiloto.css';
 
 const baseURL = 'https://api.openf1.org/v1/drivers';
 
 export const DriverDetails = () => {
-  const { driver_number } = useParams();
-  const [driver, setDriver] = useState(null);
-  const [loading, setLoading] = useState(true);
+    const { driver_number } = useParams();
+    const [driver, setDriver] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDriver = async () => {
-      try {
-        const response = await axios.get(`${baseURL}/${driver_number}`);
-        setDriver(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching driver details:', error);
-        setLoading(false);
-      }
-    };
-    fetchDriver();
-  }, [driver_number]);
+    useEffect(() => {
+        const fetchDriver = async () => {
+            try {
+                const sessionKey = '7763';
+                const response = await axios.get(baseURL, {
+                    params: {
+                        driver_number,
+                        session_key: sessionKey,
+                    },
+                });
 
-  if (loading) {
-    return <p>Cargando datos del piloto...</p>;
-  }
+                const driverData = response.data.find(
+                    (driver) => driver.driver_number === parseInt(driver_number)
+                );
 
-  if (!driver) {
-    return <p>No se encontraron detalles del piloto.</p>;
-  }
+                setDriver(driverData);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching driver details:', error);
+                setLoading(false);
+            }
+        };
 
-  return (
-    <div>
-      <h1>{driver.full_name}</h1>
-      <img src={driver.headshot_url} alt={driver.full_name} />
-      <p>Equipo: {driver.team_name}</p>
-      <p>Número de piloto: {driver.driver_number}</p>
-      <p>Nacionalidad: {driver.nationality}</p>
-      <p>Fecha de nacimiento: {driver.birth_date}</p>
-      {/* Puedes agregar más detalles si es necesario */}
-    </div>
-  );
+        fetchDriver();
+    }, [driver_number]);
+
+    if (loading) {
+        return <p className="loading-text">Cargando datos del piloto...</p>;
+    }
+
+    if (!driver) {
+        return <p className="error-text">No se encontraron detalles del piloto.</p>;
+    }
+
+    return (
+        <div className="container driver-details">
+            <div className="driver-card">
+                <img
+                    src={driver.headshot_url}
+                    alt={driver.full_name}
+                    className="img-fluid driver-image"
+                />
+                <h1 className="driver-name">{driver.full_name}</h1>
+                <p className="driver-team"><strong>Equipo:</strong> {driver.team_name}</p>
+                <p className="driver-number"><strong>Número de piloto:</strong> {driver.driver_number}</p>
+                <p className="driver-nationality"><strong>Nacionalidad:</strong> {driver.country_code}</p>
+            </div>
+        </div>
+    );
 };

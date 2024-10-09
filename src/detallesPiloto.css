@@ -1,0 +1,47 @@
+.driver-details {
+    margin: 50px auto;
+    padding: 30px;
+    max-width: 800px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.driver-name {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-bottom: 10px;
+}
+
+.driver-team,
+.driver-number,
+.driver-nationality {
+    font-size: 1.2rem;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.driver-image {
+    max-width: 180px;
+    border-radius: 50%;
+    border: 5px solid #dee2e6;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.loading-text,
+.error-text {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 50px;
+    color: #6c757d;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
