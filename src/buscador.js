@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './buscador.css';
+import { Link } from 'react-router-dom';
 
 const baseURL = 'https://api.openf1.org/v1/drivers';
 
@@ -16,16 +17,14 @@ export const Buscador = () => {
         setLoading(true);
         const response = await axios.get(baseURL);
         const newDrivers = response.data;
-        
-        console.log("Datos de la API:", newDrivers);
-        
+
         setDrivers(prevDrivers => {
           const allDrivers = [...prevDrivers, ...newDrivers];
           return allDrivers.filter((driver, index, self) =>
             index === self.findIndex(d => d.full_name === driver.full_name)
           );
         });
-        
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -53,32 +52,36 @@ export const Buscador = () => {
   }, []);
 
   return (
-    <>
-      <div id="container">
-        <h1>Buscador de F1 Drivers</h1>
-        <input
-          type="text"
-          placeholder="Buscar por nombre..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-        />
-        <div id="drivers">
-          {filteredDrivers.length > 0 ? (
-            filteredDrivers.map(driver => (
-              <div key={driver.driver_number} className="driver">
+    <div id="container">
+      <h1>Buscador Piloto de Formula 1</h1>
+      <input
+        type="text"
+        placeholder="Buscar por nombre..."
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+      />
+      <div id="drivers">
+        {filteredDrivers.length > 0 ? (
+          filteredDrivers
+            .filter(driver => driver.headshot_url)
+            .map(driver => (
+              <Link
+                key={driver.driver_number}
+                to={`/drivers/${driver.driver_number}`}
+                className="driver"
+              >
                 <img src={driver.headshot_url} alt={driver.full_name} />
                 <div className="driver-info">
                   <h2>{driver.full_name}</h2>
                   <p>{driver.team_name}</p>
                 </div>
-              </div>
+              </Link>
             ))
-          ) : (
-            <p>No se encontraron pilotos</p>
-          )}
-        </div>
-        {loading && <p>Cargando más pilotos...</p>}
+        ) : (
+          <p>No se encontraron pilotos</p>
+        )}
       </div>
-    </>
+      {loading && <p>Cargando más pilotos...</p>}
+    </div>
   );
 };
